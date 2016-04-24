@@ -2,7 +2,7 @@
     <content><![CDATA[
 /**
  * 重写删除
- * @param    $options 
+ * @param    \$options 
  * @return           
  */
 public function delete(\$options = array())
@@ -14,12 +14,15 @@ public function delete(\$options = array())
         return false;
     }
 
-    \$lists = \$this->select(\$options);
+    // 查询删除数据列表
+    \$lists = \$this->field(\$this->pk)->select(\$options);
     \$map = array();
     foreach (\$lists as \$list)
     {
-        $map['${1:XXX}_id'] = \$list['id'];
-        \$this->${2:XXXX}L->where(\$map)->delete();
+        \$map[\$this->fk] = \$list[\$this->pk];
+        // 删除关联表
+        //\$this->MenuPostL->where(\$map)->delete();
+        //\$this->DepartmentPostL->where(\$map)->delete();
     }
     return parent::delete(\$options);
 }
@@ -38,24 +41,27 @@ public function prepareDelete(\$options = array())
         return false;
     }
     
-    // 关联表 菜单岗位表
-    if (\$this->${3:XXXX}L->prepareDelete(\$options) === false)
-    {
-        \$this->setError = "${3:} prepareDelete error: " . \$this->${3:XXXX}L->getError();
-        return false;
-    }
-    
-    // 查询依赖表
-    \$lists = \$this->select(\$options);
+    // 查询预删除数据
+    \$lists = \$this->field(\$this->pk)->select(\$options);
     \$map = array();
     foreach (\$lists as \$list)
     {
-        \$map['${4:XXXXX}_id'] = \$list['id'];
-        if (\$this->${5:XXXX}L->where(\$map)->count() > 0)
-        {
-            \$this->setError = "${5:XXXX}L has data with \$list['id']: " . \$this->${5:XXXX}L->getError();
-            return false;
-        }
+        \$map[\$this->fk] = \$list[\$this->pk];
+        
+        // 查询依赖表
+        // if (\$this->UserL->where(\$map)->count() > 0)
+        // {
+        //     \$this->setError("UserL " . \$this->fk ." has datas with " . \$list[$this->pk]);
+        //     return false;
+        // }
+        
+        // 预删除关联表 
+        // 预删除 菜单岗位表
+        // if (\$this->MenuPostL->where(\$map)->prepareDelete() === false)
+        // {
+        //     \$this->setError("MenuPostL prepareDelete" . \$list[\$this->pk] ." error: " . \$this->MenuPostL->getError());
+        //     return false;
+        // }
     }
     return true;
 }
