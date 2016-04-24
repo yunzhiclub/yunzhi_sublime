@@ -1,0 +1,20 @@
+<snippet>
+    <content><![CDATA[
+<?php
+/**
+ * ${1:注释信息}
+ */
+namespace {2:snippet}\Logic;
+
+use {2:snippet}\Model\{2:snippet}Model;
+
+class {2:snippet}Logic extends {2:snippet}Model
+{
+
+}
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>logic</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <scope>source.php</scope>
+</snippet>

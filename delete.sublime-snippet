@@ -1,0 +1,67 @@
+<snippet>
+    <content><![CDATA[
+/**
+ * 重写删除
+ * @param    $options 
+ * @return           
+ */
+public function delete(\$options = array())
+{
+    // 计算选项信息，判断删除条件是否为空
+    \$options = \$this->_parseOptions(\$options);      
+    if(empty(\$options['where'])){                  
+        \$this->setError("where is empty");
+        return false;
+    }
+
+    \$lists = \$this->select(\$options);
+    \$map = array();
+    foreach (\$lists as \$list)
+    {
+        $map['${1:XXX}_id'] = \$list['id'];
+        \$this->${2:XXXX}L->where(\$map)->delete();
+    }
+    return parent::delete(\$options);
+}
+
+/**
+ * 预删除
+ * @param  array \$options 
+ * @return bool          
+ */
+public function prepareDelete(\$options = array())
+{
+    // 计算选项信息，判断删除条件是否为空
+    \$options = \$this->_parseOptions(\$options);      
+    if(empty(\$options['where'])){                  
+        \$this->setError("where is empty");
+        return false;
+    }
+    
+    // 关联表 菜单岗位表
+    if (\$this->${3:XXXX}L->prepareDelete(\$options) === false)
+    {
+        \$this->setError = "${3:} prepareDelete error: " . \$this->${3:XXXX}L->getError();
+        return false;
+    }
+    
+    // 查询依赖表
+    \$lists = \$this->select(\$options);
+    \$map = array();
+    foreach (\$lists as \$list)
+    {
+        \$map['${4:XXXXX}_id'] = \$list['id'];
+        if (\$this->${5:XXXX}L->where(\$map)->count() > 0)
+        {
+            \$this->setError = "${5:XXXX}L has data with \$list['id']: " . \$this->${5:XXXX}L->getError();
+            return false;
+        }
+    }
+    return true;
+}
+]]></content>
+    <!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+    <tabTrigger>delete</tabTrigger>
+    <!-- Optional: Set a scope to limit where the snippet will trigger -->
+    <scope>source.php</scope>
+</snippet>
